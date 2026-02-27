@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, Image, StatusBar, TextInput, ScrollView, Alert, KeyboardAvoidingView } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import { API_BASE_URL } from '@/utils/api';
 
 export default function RegisterScreen() {
 
@@ -30,11 +31,23 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, formData);
       
-      if (response.data.success) {
+      if (response.data) {
+
+        // reset the form
+        setFormData({
+            firstName: '',
+            lastName: '',
+            username: '',
+            email: '',
+            password: '',
+            role: 'student'
+
+        });
+
         Alert.alert('Success', 'Registration successful! Please login.', [
-          { text: 'OK', onPress: () => router.push('/(auth)/login') }
+          { text: 'OK', onPress: () => router.replace('/(auth)/login') }
         ]);
 
       }
