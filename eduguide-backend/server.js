@@ -13,7 +13,11 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:8081', 'exp://192.168.8.138:8081', 'http://192.168.8.138:8081'],
+  credentials: true
+})); 
+// app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 // ---------- Routes ----------
