@@ -5,6 +5,7 @@ const connectDB = require("./src/config/db");
 
 // ------- import routes ----------------
 const authRoutes = require("./src/modules/auth/auth.routes");
+const courseRoutes = require("./src/modules/course/course.routes");
 
 dotenv.config();
 
@@ -22,6 +23,9 @@ app.use(express.json());
 
 // ---------- Routes ----------
 app.use("/api/auth", authRoutes);
+app.use("/api/course", courseRoutes);
+
+
 
 
 app.get("/", (req, res) => {

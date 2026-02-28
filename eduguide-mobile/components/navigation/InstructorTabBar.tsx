@@ -19,9 +19,10 @@ const InstructorTabBar = () => {
   // tabs
   const tabs: TabItem[] = [
     { id: 0, icon: 'speedometer-outline', activeIcon: 'speedometer', route: '/(instructor)/dashboard' },
-    { id: 1, icon: 'book-outline', activeIcon: 'book', route: '/(instructor)/my-courses' },
-    { id: 2, icon: 'people-outline', activeIcon: 'people', route: '/(instructor)/students' },
-    { id: 3, icon: 'person-outline', activeIcon: 'person', route: '/(instructor)/profile' },
+    { id: 1, icon: 'add-circle-outline', activeIcon: 'add-circle', route: '/(instructor)/create-course' },
+    { id: 2, icon: 'book-outline', activeIcon: 'book', route: '/(instructor)/my-courses' },
+    { id: 3, icon: 'people-outline', activeIcon: 'people', route: '/(instructor)/students' },
+    { id: 4, icon: 'person-outline', activeIcon: 'person', route: '/(instructor)/profile' },
   ];
 
   // handle tab press 
