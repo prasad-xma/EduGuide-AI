@@ -13,6 +13,6 @@ const {
 
 router.get("/all", authenticateToken, getAllCourses);
 router.post("/:courseId/enroll", authenticateToken, authorizedRoles("student"), enrollCourse);
-router.get("/student/:studentId", authenticateToken, authorizedRoles("student"), getEnrolledCourses);
+router.get("/student", authenticateToken, authorizedRoles("student"), getEnrolledCourses);
 
 module.exports = router;
