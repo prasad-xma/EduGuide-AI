@@ -3,10 +3,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import StudentTabBar from "@/components/navigation/StudentTabBar";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
+import { useRouter, useFocusEffect } from "expo-router";
 
 export default function HomeScreen() {
   const spacing = 10;
@@ -41,9 +42,11 @@ export default function HomeScreen() {
     fetchEnrolledCourses();
   };
 
-  useEffect(() => {
-    fetchEnrolledCourses();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchEnrolledCourses();
+    }, [])
+  );
 
   const renderCourseItem = ({ item }: any) => (
     <TouchableOpacity

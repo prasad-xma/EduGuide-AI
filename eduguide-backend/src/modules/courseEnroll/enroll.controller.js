@@ -1,4 +1,4 @@
-const { getAllCoursesService, enrollCourseService, getEnrolledCoursesService } = require("./enroll.service");
+const { getAllCoursesService, enrollCourseService, getEnrolledCoursesService, getInstructorStudentsService } = require("./enroll.service");
 
 // get all courses
 const getAllCourses = async (req, res) => {
@@ -57,8 +57,27 @@ const getEnrolledCourses = async (req, res) => {
     }
 };
 
+// get instructor's enrolled students
+const getInstructorStudents = async (req, res) => {
+    try {
+        const instructorId = req.user.id; // Get from authenticated user
+        
+        const students = await getInstructorStudentsService(instructorId);
+        
+        res.status(200).json({
+            success: true,
+            message: "Instructor students retrieved successfully",
+            data: students
+        });
+        
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getAllCourses,
     enrollCourse,
     getEnrolledCourses,
+    getInstructorStudents,
 };

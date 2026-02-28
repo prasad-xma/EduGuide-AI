@@ -88,8 +88,11 @@ export default function InstructorDashboard() {
 
       {/* my courses */}
       <ScrollView style={{
+        flex: 1,
         marginHorizontal: spacing * 2,
-        marginBottom: spacing * 2,
+      }}
+      contentContainerStyle={{
+        paddingBottom: spacing * 10,
       }}>
         <View style={{
           flexDirection: "row",
@@ -216,9 +219,6 @@ export default function InstructorDashboard() {
           ))
         )}
       </ScrollView>
-
-      {/* Add padding for bottom tab bar */}
-      <View style={{ height: spacing * 10 }} />
 
       </SafeAreaView>
       <InstructorTabBar />
