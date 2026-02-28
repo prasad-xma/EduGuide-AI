@@ -84,6 +84,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       await AsyncStorage.setItem('authToken', authToken);
 
+      // Navigate based on role after successful login
+      if (decoded.role === 'student') {
+        router.replace('/(student)/homeScreen');
+      } else if (decoded.role === 'instructor') {
+        (router.replace as any)('/(instructor)/dashboard');
+      }
+
     } catch (error) {
       console.error('Error during login:', error);
       throw error;

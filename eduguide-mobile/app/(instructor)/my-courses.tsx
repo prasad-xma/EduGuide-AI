@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_BASE_URL } from "@/utils/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 
 export default function MyCoursesScreen() {
   const { token } = useAuth();
@@ -32,9 +32,11 @@ export default function MyCoursesScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchMyCourses();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchMyCourses();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#F4F6F8" }}>

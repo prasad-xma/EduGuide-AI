@@ -1,18 +1,17 @@
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View, Alert, Text, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstructorTabBar from "@/components/navigation/InstructorTabBar";
-import { Ionicons, Octicons } from "@expo/vector-icons";
-import { Text, TextInput } from "react-native";
+import { Octicons } from "@expo/vector-icons";
+
 import { useState } from "react";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
-import { Alert } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
 
 export default function CreateCourse() {
   const spacing = 10;
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
