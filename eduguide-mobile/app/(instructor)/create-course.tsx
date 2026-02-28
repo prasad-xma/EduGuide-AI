@@ -39,6 +39,11 @@ export default function CreateCourse() {
 
       if (res.data?.data) {
         Alert.alert('Success', 'Course created successfully!');
+        setFormData({
+          title: '',
+          description: '',
+          content: '',
+        });
         (router.replace as any)('/(instructor)/my-courses');
       }
       // console.log(res.data);

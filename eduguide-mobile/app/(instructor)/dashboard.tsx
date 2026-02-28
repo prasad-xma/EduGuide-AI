@@ -2,11 +2,11 @@ import { View, TouchableOpacity, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { Ionicons, Octicons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 
 export default function InstructorDashboard() {
   const spacing = 10;
@@ -34,9 +34,11 @@ export default function InstructorDashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchInstructorCourses();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchInstructorCourses();
+    }, [])
+  );
 
   return (
     <View style={{ flex: 1 }}>
