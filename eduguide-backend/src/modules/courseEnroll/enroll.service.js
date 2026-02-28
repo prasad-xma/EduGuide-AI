@@ -1,5 +1,6 @@
 const Course = require("../course/course.model");
 const Enrollment = require("./enrollment.model");
+const User = require("../auth/user.model");
 
 // get all courses
 const getAllCoursesService = async () => {
@@ -47,8 +48,27 @@ const getEnrolledCoursesService = async (studentId) => {
     }));
 };
 
+// get instructor's enrolled students
+const getInstructorStudentsService = async (instructorId) => {
+    const enrollments = await Enrollment.find({ instructor: instructorId })
+        .populate("course", "title")
+        .populate("student", "firstName lastName email");
+
+    return enrollments.map(enrollment => ({
+        _id: enrollment._id,
+        courseTitle: enrollment.course.title,
+        courseId: enrollment.course._id,
+        studentName: `${enrollment.student.firstName} ${enrollment.student.lastName}`,
+        studentEmail: enrollment.student.email,
+        studentId: enrollment.student._id,
+        progress: enrollment.progress,
+        enrolledAt: enrollment.createdAt
+    }));
+};
+
 module.exports = {
     getAllCoursesService,
     enrollCourseService,
     getEnrolledCoursesService,
+    getInstructorStudentsService,
 };

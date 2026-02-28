@@ -70,7 +70,11 @@ export default function MyCoursesScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView style={{ paddingHorizontal: 20 }}>
+      <View style={{ flex: 1 }}>
+        <ScrollView 
+          style={{ paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        >
         {loading ? (
           <Text style={{ textAlign: "center", marginTop: 40 }}>
             Loading courses...
@@ -160,6 +164,7 @@ export default function MyCoursesScreen() {
           ))
         )}
       </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
