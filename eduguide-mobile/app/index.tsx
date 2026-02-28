@@ -1,9 +1,16 @@
 import { Text, View, TouchableOpacity, Image, StatusBar } from "react-native";
 import { useRouter } from "expo-router";
 import "react-native-css-interop/jsx-runtime";
+import { useAuth } from "@/contexts/AuthContext";
+import LoadingScreen from "@/components/LoadingScreen";
 
 export default function Index() {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <View style={{

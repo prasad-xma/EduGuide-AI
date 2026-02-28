@@ -1,5 +1,13 @@
-import { Stack } from 'expo-router';
+import { Tabs } from 'expo-router';
+import InstructorTabBar from '@/components/navigation/InstructorTabBar';
 
 export default function InstructorLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+      }}
+      tabBar={() => <InstructorTabBar />}
+    />
+  );
 }

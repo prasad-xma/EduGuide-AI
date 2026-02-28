@@ -1,5 +1,13 @@
-import { Stack } from 'expo-router';
+import { Tabs } from 'expo-router';
+import StudentTabBar from '@/components/navigation/StudentTabBar';
 
 export default function StudentLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+      }}
+      tabBar={() => <StudentTabBar />}
+    />
+  );
 }
