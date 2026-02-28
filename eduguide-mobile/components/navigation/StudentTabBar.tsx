@@ -18,8 +18,8 @@ const StudentTabBar = () => {
 
   const tabs: TabItem[] = [
     { id: 0, icon: 'home-outline', activeIcon: 'home', route: '/(student)/homeScreen' },
-    { id: 1, icon: 'book-outline', activeIcon: 'book', route: '/(student)/courses' },
-    { id: 2, icon: 'chatbubble-outline', activeIcon: 'chatbubble', route: '/(student)/gpt-recommend' },
+    { id: 1, icon: 'book-outline', activeIcon: 'book', route: '/(student)/ai-recommendation' },
+    { id: 2, icon: 'grid-outline', activeIcon: 'grid', route: '/(student)/browse-courses' },
     { id: 3, icon: 'person-outline', activeIcon: 'person', route: '/(student)/profile' },
   ];
 

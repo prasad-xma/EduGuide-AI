@@ -1,10 +1,10 @@
 const Course = require("../course/course.model");
+const Enrollment = require("./enrollment.model");
 
 // get all courses
 const getAllCoursesService = async () => {
   return await Course.find().populate("instructor", "firstName lastName");
 };
-
 
 // enroll in course
 const enrollCourseService = async (courseId, studentId) => {
@@ -12,30 +12,43 @@ const enrollCourseService = async (courseId, studentId) => {
 
     if (!course) throw new Error("Course not found");
 
-    if (course.enrolledStudents.includes(studentId)) {
+    const existingEnrollment = await Enrollment.findOne({
+        student: studentId,
+        course: courseId
+    });
+
+    if (existingEnrollment) {
         throw new Error("Already enrolled");
     }
 
+    const enrollment = await Enrollment.create({
+        student: studentId,
+        course: courseId,
+        instructor: course.instructor,
+        progress: 0
+    });
 
-    course.enrolledStudents.push(studentId);
-    await course.save();
-
-    return course;
+    return enrollment;
 };
-
 
 // get enrolled courses
 const getEnrolledCoursesService = async (studentId) => {
-    return await Course.find({
-        enrolledStudents: studentId,
-    }).populate("instructor", "firstName lastName");
+    const enrollments = await Enrollment.find({ student: studentId })
+        .populate("course", "title description")
+        .populate("instructor", "firstName lastName");
+
+    return enrollments.map(enrollment => ({
+        _id: enrollment.course._id,
+        title: enrollment.course.title,
+        description: enrollment.course.description,
+        instructor: enrollment.instructor,
+        progress: enrollment.progress,
+        enrolledAt: enrollment.createdAt
+    }));
 };
-
-
 
 module.exports = {
     getAllCoursesService,
     enrollCourseService,
     getEnrolledCoursesService,
-
 };
