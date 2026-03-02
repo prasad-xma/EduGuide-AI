@@ -206,7 +206,7 @@ export default function LoginScreen() {
                 fontSize: 14,
                 color: '#6C757D',
               }}>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
               </Text>
               <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
                 <Text style={{

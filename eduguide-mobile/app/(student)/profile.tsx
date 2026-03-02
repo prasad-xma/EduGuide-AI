@@ -1,11 +1,11 @@
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View, Alert, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StudentTabBar from "@/components/navigation/StudentTabBar";
 import { Ionicons, Octicons } from "@expo/vector-icons";
-import { Text } from "react-native";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
-import { Alert } from "react-native";
+
 
 export default function StudentProfile() {
   const spacing = 10;

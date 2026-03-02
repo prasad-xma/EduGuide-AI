@@ -1,11 +1,9 @@
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { Ionicons, Octicons } from "@expo/vector-icons";
-import { Text } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
-import { Alert } from "react-native";
 
 export default function InstructorProfile() {
   const spacing = 10;

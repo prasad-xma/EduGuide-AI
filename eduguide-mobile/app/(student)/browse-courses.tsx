@@ -1,8 +1,8 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StudentTabBar from "@/components/navigation/StudentTabBar";
 import { Octicons } from "@expo/vector-icons";
-import { Text } from "react-native";
+
 import { useState } from "react";
 import RecommendedCoursesScreen from "@/components/recommended-courses";
 import AllCoursesScreen from "@/components/all-courses";

@@ -1,10 +1,9 @@
-import { ScrollView, TouchableOpacity, View, Text, TextInput } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text, TextInput, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
-import { Alert } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";

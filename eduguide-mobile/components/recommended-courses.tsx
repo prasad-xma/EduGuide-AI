@@ -1,6 +1,5 @@
-import { FlatList, TouchableOpacity, View, Alert } from "react-native";
+import { FlatList, TouchableOpacity, View, Alert, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Text } from "react-native";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_BASE_URL } from "@/utils/api";
