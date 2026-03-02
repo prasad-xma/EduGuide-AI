@@ -7,6 +7,7 @@ const generateAiRecommendation = async (req, res) => {
         const userId = req.user.id;
         const { query } = req.body;
 
+        
         if (!query || typeof query !== 'string' || query.trim().length === 0) {
             return res.status(400).json({
                 success: false,
@@ -14,6 +15,7 @@ const generateAiRecommendation = async (req, res) => {
             });
         }
 
+        // Check if there's an existing active recommendation
         const existingRecommendation = await AiRecommendation.findOne({ 
             userId, 
             is_active: true 
@@ -21,6 +23,7 @@ const generateAiRecommendation = async (req, res) => {
 
         const aiResult = await generateCourseRecommendations(query);
 
+        // Update or create recommendation
         let recommendation;
         if (existingRecommendation) {
             existingRecommendation.query = query;
@@ -42,9 +45,15 @@ const generateAiRecommendation = async (req, res) => {
             await recommendation.save();
         }
 
-        const recommendedCourses = await Course.find({
-            title: { $in: aiResult.ai_response.recommended_courses.map(rc => rc.title) }
-        });
+        const recommendedTitles = Array.isArray(aiResult?.ai_response?.recommended_courses)
+            ? aiResult.ai_response.recommended_courses
+                .map(rc => rc && typeof rc.title === 'string' ? rc.title : null)
+                .filter(Boolean)
+            : [];
+
+        const recommendedCourses = recommendedTitles.length > 0
+            ? await Course.find({ title: { $in: recommendedTitles } })
+            : [];
 
         return res.status(200).json({
             success: true,
@@ -65,6 +74,7 @@ const generateAiRecommendation = async (req, res) => {
     }
 };
 
+// get user recommendations
 const getUserRecommendations = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -83,9 +93,16 @@ const getUserRecommendations = async (req, res) => {
             });
         }
 
-        const recommendedCourses = await Course.find({
-            title: { $in: recommendation.ai_response.recommended_courses.map(rc => rc.title) }
-        });
+        // extract course titles 
+        const recommendedTitles = Array.isArray(recommendation?.ai_response?.recommended_courses)
+            ? recommendation.ai_response.recommended_courses
+                .map(rc => rc && typeof rc.title === 'string' ? rc.title : null)
+                .filter(Boolean)
+            : [];
+
+        const recommendedCourses = recommendedTitles.length > 0
+            ? await Course.find({ title: { $in: recommendedTitles } })
+            : [];
 
         return res.status(200).json({
             success: true,
@@ -105,6 +122,7 @@ const getUserRecommendations = async (req, res) => {
     }
 };
 
+// update recommendation
 const updateRecommendation = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -117,8 +135,10 @@ const updateRecommendation = async (req, res) => {
             });
         }
 
+        // generate course recommendations
         const aiResult = await generateCourseRecommendations(query);
 
+        // update recommendation
         const recommendation = await AiRecommendation.findOneAndUpdate(
             { userId, is_active: true },
             { 
@@ -136,9 +156,16 @@ const updateRecommendation = async (req, res) => {
             });
         }
 
-        const recommendedCourses = await Course.find({
-            title: { $in: aiResult.ai_response.recommended_courses.map(rc => rc.title) }
-        });
+        // get recommended course titles
+        const recommendedTitles = Array.isArray(aiResult?.ai_response?.recommended_courses)
+            ? aiResult.ai_response.recommended_courses
+                .map(rc => rc && typeof rc.title === 'string' ? rc.title : null)
+                .filter(Boolean)
+            : [];
+
+        const recommendedCourses = recommendedTitles.length > 0
+            ? await Course.find({ title: { $in: recommendedTitles } })
+            : [];
 
         return res.status(200).json({
             success: true,
@@ -159,6 +186,7 @@ const updateRecommendation = async (req, res) => {
     }
 };
 
+// delete recommendation
 const deleteRecommendation = async (req, res) => {
     try {
         const userId = req.user.id;
