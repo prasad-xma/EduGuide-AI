@@ -7,6 +7,7 @@ const connectDB = require("./src/config/db");
 const authRoutes = require("./src/modules/auth/auth.routes");
 const courseRoutes = require("./src/modules/course/course.routes");
 const enrollRoutes = require("./src/modules/courseEnroll/enroll.routes");
+const aiRecommendationRoutes = require("./src/modules/ai-recommendation/aiRecommendation.routes");
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/enroll", enrollRoutes);
+app.use("/api/ai-recommendation", aiRecommendationRoutes);
 
 app.get("/", (req, res) => {
   res.send("EduGuide AI API Running...");
