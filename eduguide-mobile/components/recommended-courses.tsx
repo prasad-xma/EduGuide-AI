@@ -1,10 +1,10 @@
 import { FlatList, TouchableOpacity, View, Alert, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RecommendedCoursesScreen() {
@@ -14,22 +14,31 @@ export default function RecommendedCoursesScreen() {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async () => {
+    setLoading(true);
     try {
       const stored = await AsyncStorage.getItem('aiRecommendations');
       if (stored) {
         setRecommendations(JSON.parse(stored));
+      } else {
+        setRecommendations(null);
       }
     } catch (error) {
       console.error('Error loading recommendations:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadRecommendations();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadRecommendations();
+    }, [loadRecommendations])
+  );
 
   const handleEnroll = async (courseId: string) => {
     try {

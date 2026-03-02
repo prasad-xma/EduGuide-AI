@@ -32,7 +32,6 @@ export default function AIRecommendation() {
 
     setLoading(true);
     try {
-      console.log('Using token:', token ? 'Token exists' : 'No token');
       const response = await fetch(`${API_BASE_URL}/api/ai-recommendation/generate`, {
         method: 'POST',
         headers: {
@@ -47,7 +46,12 @@ export default function AIRecommendation() {
       if (data.success) {
         await AsyncStorage.setItem('aiRecommendations', JSON.stringify(data.data));
         setRecommendations(data.data);
-        Alert.alert('Success', 'Recommendations generated! Check the Recommended tab.');
+        Alert.alert('Success', 'Recommendations generated!', [
+          {
+            text: 'View Recommended',
+            onPress: () => router.replace('/(student)/browse-courses' as any),
+          },
+        ]);
       } else {
         Alert.alert('Error', data.message || 'Failed to generate recommendations');
       }
