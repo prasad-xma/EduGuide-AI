@@ -76,13 +76,12 @@ export default function InstructorStudentsScreen() {
               Loading students...
             </Text>
           ) : students.length === 0 ? (
+            
             <View style={{ alignItems: "center", marginTop: 60 }}>
               <Text style={{ fontSize: 16, color: "#6C757D" }}>
                 No students enrolled yet
               </Text>
-              <Text style={{ color: "#6C757D" }}>
-                Students will appear here when they enroll in your courses
-              </Text>
+              
             </View>
           ) : (
             <View style={{ backgroundColor: "#FFFFFF", borderRadius: 12, padding: 16 }}>

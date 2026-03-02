@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity, View, Text, TextInput } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { useState, useEffect } from "react";
@@ -6,21 +6,17 @@ import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
 import { Alert } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useCallback } from "react";
 
-export default function EditCourse() {
+export default function ViewCourse() {
   const spacing = 10;
   const { token } = useAuth();
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const [loading, setLoading] = useState(false);
-  const [courseLoading, setCourseLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    content: '',
-  });
+  const [loading, setLoading] = useState(true);
+  const [course, setCourse] = useState<any>(null);
 
   useEffect(() => {
     fetchCourse();
@@ -36,53 +32,23 @@ export default function EditCourse() {
       });
 
       if (res.data?.data) {
-        setFormData({
-          title: res.data.data.title || '',
-          description: res.data.data.description || '',
-          content: res.data.data.content || '',
-        });
+        setCourse(res.data.data);
       }
     } catch (error: any) {
       console.error('Error fetching course:', error);
-      
       Alert.alert('Error', 'Failed to load course');
-    
-    } finally {
-      setCourseLoading(false);
-    }
-  };
-
-  const handleUpdateCourse = async () => {
-    if (!formData.title.trim() || !formData.description.trim() || !formData.content.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
-      
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await axios.put(`${API_BASE_URL}/api/course/${id}`, formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      Alert.alert('Success', 'Course updated successfully!');
-      (router.replace as any)('/(instructor)/my-courses');
-    
-    } catch (error: any) {
-      console.error('Error updating course:', error);
-      const errorMessage = error?.response?.data?.message || 'Failed to update course';
-      
-      Alert.alert('Error', errorMessage);
-
     } finally {
       setLoading(false);
     }
   };
 
-  if (courseLoading) {
+  useFocusEffect(
+    useCallback(() => {
+      fetchCourse();
+    }, [id])
+  );
+
+  if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text>Loading course...</Text>
@@ -90,10 +56,17 @@ export default function EditCourse() {
     );
   }
 
+  if (!course) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Course not found</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
-
         {/* Header */}
         <View style={{
           paddingHorizontal: spacing * 2,
@@ -113,7 +86,8 @@ export default function EditCourse() {
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: "#F8F9FA",
-              }}>
+              }}
+            >
               <Ionicons name="arrow-back" size={20} color="#2C3E50" />
             </TouchableOpacity>
 
@@ -122,23 +96,26 @@ export default function EditCourse() {
               fontWeight: "bold",
               color: "#2C3E50",
             }}>
-              Edit Course
+              Course Details
             </Text>
 
-            <TouchableOpacity style={{
-              width: spacing * 5,
-              height: spacing * 5,
-              borderRadius: spacing * 3,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#F8F9FA",
-            }}>
-              <Ionicons name="settings-outline" size={20} color="#2C3E50" />
+            <TouchableOpacity 
+              onPress={() => router.push(`/(instructor)/edit-course/${id}` as any)}
+              style={{
+                width: spacing * 5,
+                height: spacing * 5,
+                borderRadius: spacing * 3,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#F8F9FA",
+              }}
+            >
+              <Ionicons name="create-outline" size={20} color="#2C3E50" />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Form */}
+        {/* Course Content */}
         <ScrollView 
           contentContainerStyle={{
             paddingVertical: spacing * 1.5,
@@ -152,27 +129,19 @@ export default function EditCourse() {
             marginBottom: spacing * 2,
           }}>
             <Text style={{
-              fontSize: 16,
+              fontSize: 24,
               fontWeight: "bold",
               color: "#2C3E50",
               marginBottom: spacing,
             }}>
-              Course Title
+              {course.title}
             </Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#E9ECEF",
-                borderRadius: spacing,
-                padding: spacing * 1.5,
-                fontSize: 16,
-                backgroundColor: "#FFFFFF",
-              }}
-              placeholder="Enter course title"
-              value={formData.title}
-              onChangeText={(text) => setFormData(prev => ({ ...prev, title: text }))}
-              multiline={false}
-            />
+            <Text style={{
+              fontSize: 14,
+              color: "#6C757D",
+            }}>
+              {course.enrolledStudents ? course.enrolledStudents.length : 0} students enrolled
+            </Text>
           </View>
 
           {/* Description */}
@@ -180,29 +149,20 @@ export default function EditCourse() {
             marginBottom: spacing * 2,
           }}>
             <Text style={{
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: "bold",
               color: "#2C3E50",
               marginBottom: spacing,
             }}>
               Description
             </Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#E9ECEF",
-                borderRadius: spacing,
-                padding: spacing * 1.5,
-                fontSize: 16,
-                backgroundColor: "#FFFFFF",
-                height: 100,
-                textAlignVertical: "top",
-              }}
-              placeholder="Enter course description"
-              value={formData.description}
-              onChangeText={(text) => setFormData(prev => ({ ...prev, description: text }))}
-              multiline={true}
-            />
+            <Text style={{
+              fontSize: 16,
+              color: "#555",
+              lineHeight: 24,
+            }}>
+              {course.description}
+            </Text>
           </View>
 
           {/* Content */}
@@ -210,49 +170,39 @@ export default function EditCourse() {
             marginBottom: spacing * 2,
           }}>
             <Text style={{
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: "bold",
               color: "#2C3E50",
               marginBottom: spacing,
             }}>
               Course Content
             </Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "#E9ECEF",
-                borderRadius: spacing,
-                padding: spacing * 1.5,
-                fontSize: 16,
-                backgroundColor: "#FFFFFF",
-                height: 150,
-                textAlignVertical: "top",
-              }}
-              placeholder="Enter course content"
-              value={formData.content}
-              onChangeText={(text) => setFormData(prev => ({ ...prev, content: text }))}
-              multiline={true}
-            />
+            <Text style={{
+              fontSize: 16,
+              color: "#555",
+              lineHeight: 24,
+            }}>
+              {course.content}
+            </Text>
           </View>
 
-          {/* Update Button */}
+          {/* Edit Button */}
           <TouchableOpacity
             style={{
-              backgroundColor: loading ? "#6C757D" : "#2C3E50",
+              backgroundColor: "#2C3E50",
               paddingVertical: spacing * 2,
               borderRadius: spacing * 1.5,
               alignItems: "center",
               marginBottom: spacing * 2,
             }}
-            onPress={handleUpdateCourse}
-            disabled={loading}
+            onPress={() => router.push(`/(instructor)/edit-course/${id}` as any)}
           >
             <Text style={{
               color: "#FFFFFF",
               fontSize: 16,
               fontWeight: "bold",
             }}>
-              {loading ? "Updating..." : "Update Course"}
+              Edit Course
             </Text>
           </TouchableOpacity>
         </ScrollView>

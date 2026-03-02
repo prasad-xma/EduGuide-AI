@@ -16,11 +16,15 @@ connectDB();
 
 const app = express();
 
-app.use(cors({
-  origin: ['http://localhost:8081', 'exp://192.168.8.138:8081', 'http://192.168.8.138:8081'],
-  credentials: true
-})); 
-// app.use(cors({ origin: true, credentials: true }));
+// CORS Configuration
+
+app.use(
+  cors({
+    origin: true, // allow all origins 
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // ---------- Routes ----------
@@ -31,6 +35,12 @@ app.use("/api/ai-recommendation", aiRecommendationRoutes);
 
 app.get("/", (req, res) => {
   res.send("EduGuide AI API Running...");
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
 const PORT = process.env.PORT || 5000;

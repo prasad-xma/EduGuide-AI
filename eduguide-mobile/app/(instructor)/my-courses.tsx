@@ -150,6 +150,7 @@ export default function MyCoursesScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                  onPress={() => router.push(`/(instructor)/view-course/${course._id}` as any)}
                   style={{
                     backgroundColor: "#2C3E50",
                     paddingHorizontal: 12,

@@ -29,12 +29,14 @@ const generateAiRecommendation = async (req, res) => {
             existingRecommendation.is_active = true;
             
             recommendation = await existingRecommendation.save();
+
         } else {
             recommendation = new AiRecommendation({
                 userId,
                 query,
                 ai_response: aiResult.ai_response,
                 response_metadata: aiResult.metadata
+            
             });
             
             await recommendation.save();
