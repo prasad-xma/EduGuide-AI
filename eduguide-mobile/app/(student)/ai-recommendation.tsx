@@ -10,11 +10,15 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/contexts/AuthContext';
+import { API_BASE_URL } from '@/utils/api';
 
 export default function AIRecommendation() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [recommendations, setRecommendations] = useState<any>(null);
   const router = useRouter();
+  const { token } = useAuth();
 
   const generateRecommendations = async () => {
     if (!query.trim()) {
@@ -24,8 +28,8 @@ export default function AIRecommendation() {
 
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await fetch('http://192.168.8.138:5000/api/ai-recommendation/generate', {
+      console.log('Using token:', token ? 'Token exists' : 'No token');
+      const response = await fetch(`${API_BASE_URL}/api/ai-recommendation/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +42,8 @@ export default function AIRecommendation() {
 
       if (data.success) {
         await AsyncStorage.setItem('aiRecommendations', JSON.stringify(data.data));
-        router.push('/(student)/browse-courses');
+        setRecommendations(data.data);
+        Alert.alert('Success', 'Recommendations generated! Check the Recommended tab.');
       } else {
         Alert.alert('Error', data.message || 'Failed to generate recommendations');
       }
@@ -51,13 +56,16 @@ export default function AIRecommendation() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#F4F6F8', padding: 20 }}>
+    <View style={{ 
+        flex: 1,
+        backgroundColor: '#F4F6F8',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingBottom: 100
+      }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#2C3E50', marginBottom: 20 }}>
         AI Course Recommendations
-      </Text>
-
-      <Text style={{ fontSize: 16, color: '#555', marginBottom: 20 }}>
-        Tell us what you want to become and we'll recommend the best courses for you.
       </Text>
 
       <View style={{ marginBottom: 20 }}>
@@ -75,7 +83,7 @@ export default function AIRecommendation() {
             minHeight: 100,
             textAlignVertical: 'top',
           }}
-          placeholder="e.g., I want to become a software engineer, what courses should I take?"
+          placeholder="I want to become a software engineer, what courses should I take?"
           value={query}
           onChangeText={setQuery}
           multiline
@@ -109,6 +117,6 @@ export default function AIRecommendation() {
           <ActivityIndicator size="large" color="#2C3E50" />
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 }
