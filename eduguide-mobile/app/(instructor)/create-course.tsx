@@ -1,6 +1,5 @@
-import { ScrollView, TouchableOpacity, View, Alert, Text, TextInput } from "react-native";
+import { ScrollView, TouchableOpacity, View, Alert, Text, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { Octicons } from "@expo/vector-icons";
 
 import { useState } from "react";
@@ -61,8 +60,14 @@ export default function CreateCourse() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1 }}>
 
       {/* Header */}
       <View style={{
@@ -111,9 +116,10 @@ export default function CreateCourse() {
         contentContainerStyle={{
           paddingVertical: spacing * 1.5,
           marginHorizontal: spacing * 2,
-          paddingBottom: spacing * 10, 
+          paddingBottom: spacing * 18, 
         }}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* title */}
         <View style={{
@@ -239,8 +245,9 @@ export default function CreateCourse() {
         </TouchableOpacity>
       </ScrollView>
 
-      </SafeAreaView>
-      <InstructorTabBar />
-    </View>
+          </SafeAreaView>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

@@ -7,6 +7,10 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -56,67 +60,86 @@ export default function AIRecommendation() {
   };
 
   return (
-    <View style={{ 
-        flex: 1,
-        backgroundColor: '#F4F6F8',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingBottom: 100
-      }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#2C3E50', marginBottom: 20 }}>
-        AI Course Recommendations
-      </Text>
-
-      <View style={{ marginBottom: 20 }}>
-        <Text style={{ fontSize: 16, color: '#2C3E50', marginBottom: 8 }}>
-          What do you want to learn?
-        </Text>
-        <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: '#ddd',
-            borderRadius: 8,
-            padding: 15,
-            fontSize: 16,
-            backgroundColor: '#fff',
-            minHeight: 100,
-            textAlignVertical: 'top',
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#F4F6F8' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: 20,
+            paddingVertical: 24,
+            paddingBottom: 120,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
-          placeholder="I want to become a software engineer, what courses should I take?"
-          value={query}
-          onChangeText={setQuery}
-          multiline
-        />
-      </View>
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={{ width: '100%', maxWidth: 520 }}>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#2C3E50', marginBottom: 20, textAlign: 'center' }}>
+              AI Course Recommendations
+            </Text>
 
-      <TouchableOpacity
-        onPress={generateRecommendations}
-        disabled={loading}
-        style={{
-          backgroundColor: loading ? '#ccc' : '#2C3E50',
-          padding: 15,
-          borderRadius: 8,
-          alignItems: 'center',
-        }}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" size="small" />
-        ) : (
-          <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
-            Get Recommendations
-          </Text>
-        )}
-      </TouchableOpacity>
+            <View style={{ marginBottom: 20, width: '100%' }}>
+              <Text style={{ fontSize: 16, color: '#2C3E50', marginBottom: 8 }}>
+                What do you want to learn?
+              </Text>
+              <TextInput
+                style={{
+                  borderWidth: 1,
+                  borderColor: '#ddd',
+                  borderRadius: 8,
+                  paddingHorizontal: 15,
+                  paddingVertical: 12,
+                  fontSize: 16,
+                  backgroundColor: '#fff',
+                  height: 120,
+                  width: '100%',
+                  textAlignVertical: 'top',
+                }}
+                placeholder="I want to become a software engineer, what courses should I take?"
+                value={query}
+                onChangeText={setQuery}
+                multiline
+                scrollEnabled
+              />
+            </View>
 
-      {loading && (
-        <View style={{ marginTop: 20, alignItems: 'center' }}>
-          <Text style={{ color: '#666', marginBottom: 10 }}>
-            Generating personalized recommendations...
-          </Text>
-          <ActivityIndicator size="large" color="#2C3E50" />
-        </View>
-      )}
-    </View>
+            <TouchableOpacity
+              onPress={generateRecommendations}
+              disabled={loading}
+              style={{
+                backgroundColor: loading ? '#ccc' : '#2C3E50',
+                padding: 15,
+                borderRadius: 8,
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" size="small" />
+              ) : (
+                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+                  Get Recommendations
+                </Text>
+              )}
+            </TouchableOpacity>
+
+            {loading && (
+              <View style={{ marginTop: 20, alignItems: 'center' }}>
+                <Text style={{ color: '#666', marginBottom: 10 }}>
+                  Generating personalized recommendations...
+                </Text>
+                <ActivityIndicator size="large" color="#2C3E50" />
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

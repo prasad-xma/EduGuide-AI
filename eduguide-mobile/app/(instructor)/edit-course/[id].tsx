@@ -1,6 +1,5 @@
-import { ScrollView, TouchableOpacity, View, Text, TextInput, Alert } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text, TextInput, Alert, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import InstructorTabBar from "@/components/navigation/InstructorTabBar";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/utils/api";
 import axios from "axios";
@@ -90,8 +89,14 @@ export default function EditCourse() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1 }}>
 
         {/* Header */}
         <View style={{
@@ -142,9 +147,10 @@ export default function EditCourse() {
           contentContainerStyle={{
             paddingVertical: spacing * 1.5,
             marginHorizontal: spacing * 2,
-            paddingBottom: spacing * 10, 
+            paddingBottom: spacing * 18, 
           }}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           {/* Title */}
           <View style={{
@@ -256,10 +262,9 @@ export default function EditCourse() {
           </TouchableOpacity>
         </ScrollView>
 
-        {/* Add padding for bottom tab bar */}
-        <View style={{ height: spacing * 10 }} />
-      </SafeAreaView>
-      <InstructorTabBar />
-    </View>
+          </SafeAreaView>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
